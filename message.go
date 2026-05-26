@@ -5,9 +5,6 @@
 package gocelery
 
 import (
-	"encoding/base64"
-	"encoding/json"
-	"log"
 	"reflect"
 	"sync"
 	"time"
@@ -24,13 +21,7 @@ type CeleryMessage struct {
 	ContentEncoding string                 `json:"content-encoding"`
 }
 
-func (cm *CeleryMessage) reset() {
-	cm.Headers = nil
-	cm.Body = ""
-	cm.Properties.CorrelationID = uuid.Must(uuid.NewV4()).String()
-	cm.Properties.ReplyTo = uuid.Must(uuid.NewV4()).String()
-	cm.Properties.DeliveryTag = uuid.Must(uuid.NewV4()).String()
-}
+func (cm *CeleryMessage) reset() { _ = "STUB: not implemented"; return }
 
 var celeryMessagePool = sync.Pool{
 	New: func() interface{} {
@@ -56,15 +47,11 @@ var celeryMessagePool = sync.Pool{
 }
 
 func getCeleryMessage(encodedTaskMessage string) *CeleryMessage {
-	msg := celeryMessagePool.Get().(*CeleryMessage)
-	msg.Body = encodedTaskMessage
-	return msg
+	_ = "STUB: not implemented"
+	return nil
 }
 
-func releaseCeleryMessage(v *CeleryMessage) {
-	v.reset()
-	celeryMessagePool.Put(v)
-}
+func releaseCeleryMessage(v *CeleryMessage) { _ = "STUB: not implemented"; return }
 
 // CeleryProperties represents properties json
 type CeleryProperties struct {
@@ -85,29 +72,16 @@ type CeleryDeliveryInfo struct {
 
 // GetTaskMessage retrieve and decode task messages from broker
 func (cm *CeleryMessage) GetTaskMessage() *TaskMessage {
+	_ = "STUB: not implemented"
 	// ensure content-type is 'application/json'
-	if cm.ContentType != "application/json" {
-		log.Println("unsupported content type " + cm.ContentType)
-		return nil
-	}
-	// ensure body encoding is base64
-	if cm.Properties.BodyEncoding != "base64" {
-		log.Println("unsupported body encoding " + cm.Properties.BodyEncoding)
-		return nil
-	}
-	// ensure content encoding is utf-8
-	if cm.ContentEncoding != "utf-8" {
-		log.Println("unsupported encoding " + cm.ContentEncoding)
-		return nil
-	}
-	// decode body
-	taskMessage, err := DecodeTaskMessage(cm.Body)
-	if err != nil {
-		log.Println("failed to decode task message")
-		return nil
-	}
-	return taskMessage
+	return nil
 }
+
+// ensure body encoding is base64
+
+// ensure content encoding is utf-8
+
+// decode body
 
 // TaskMessage is celery-compatible message
 type TaskMessage struct {
@@ -120,12 +94,7 @@ type TaskMessage struct {
 	Expires *time.Time             `json:"expires"`
 }
 
-func (tm *TaskMessage) reset() {
-	tm.ID = uuid.Must(uuid.NewV4()).String()
-	tm.Task = ""
-	tm.Args = nil
-	tm.Kwargs = nil
-}
+func (tm *TaskMessage) reset() { _ = "STUB: not implemented"; return }
 
 var taskMessagePool = sync.Pool{
 	New: func() interface{} {
@@ -139,46 +108,18 @@ var taskMessagePool = sync.Pool{
 	},
 }
 
-func getTaskMessage(task string) *TaskMessage {
-	msg := taskMessagePool.Get().(*TaskMessage)
-	msg.Task = task
-	msg.Args = make([]interface{}, 0)
-	msg.Kwargs = make(map[string]interface{})
-	msg.ETA = nil
-	return msg
-}
+func getTaskMessage(task string) *TaskMessage { _ = "STUB: not implemented"; return nil }
 
-func releaseTaskMessage(v *TaskMessage) {
-	v.reset()
-	taskMessagePool.Put(v)
-}
+func releaseTaskMessage(v *TaskMessage) { _ = "STUB: not implemented"; return }
 
 // DecodeTaskMessage decodes base64 encrypted body and return TaskMessage object
 func DecodeTaskMessage(encodedBody string) (*TaskMessage, error) {
-	body, err := base64.StdEncoding.DecodeString(encodedBody)
-	if err != nil {
-		return nil, err
-	}
-	message := taskMessagePool.Get().(*TaskMessage)
-	err = json.Unmarshal(body, message)
-	if err != nil {
-		return nil, err
-	}
-	return message, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // Encode returns base64 json encoded string
-func (tm *TaskMessage) Encode() (string, error) {
-	if tm.Args == nil {
-		tm.Args = make([]interface{}, 0)
-	}
-	jsonData, err := json.Marshal(tm)
-	if err != nil {
-		return "", err
-	}
-	encodedData := base64.StdEncoding.EncodeToString(jsonData)
-	return encodedData, err
-}
+func (tm *TaskMessage) Encode() (string, error) { _ = "STUB: not implemented"; return "", nil }
 
 // ResultMessage is return message received from broker
 type ResultMessage struct {
@@ -189,9 +130,7 @@ type ResultMessage struct {
 	Children  []interface{} `json:"children"`
 }
 
-func (rm *ResultMessage) reset() {
-	rm.Result = nil
-}
+func (rm *ResultMessage) reset() { _ = "STUB: not implemented"; return }
 
 var resultMessagePool = sync.Pool{
 	New: func() interface{} {
@@ -203,19 +142,11 @@ var resultMessagePool = sync.Pool{
 	},
 }
 
-func getResultMessage(val interface{}) *ResultMessage {
-	msg := resultMessagePool.Get().(*ResultMessage)
-	msg.Result = val
-	return msg
-}
+func getResultMessage(val interface{}) *ResultMessage { _ = "STUB: not implemented"; return nil }
 
 func getReflectionResultMessage(val *reflect.Value) *ResultMessage {
-	msg := resultMessagePool.Get().(*ResultMessage)
-	msg.Result = GetRealValue(val)
-	return msg
+	_ = "STUB: not implemented"
+	return nil
 }
 
-func releaseResultMessage(v *ResultMessage) {
-	v.reset()
-	resultMessagePool.Put(v)
-}
+func releaseResultMessage(v *ResultMessage) { _ = "STUB: not implemented"; return }

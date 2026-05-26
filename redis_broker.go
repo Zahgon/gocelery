@@ -5,10 +5,6 @@
 package gocelery
 
 import (
-	"encoding/json"
-	"fmt"
-	"time"
-
 	"github.com/gomodule/redigo/redis"
 )
 
@@ -19,88 +15,34 @@ type RedisCeleryBroker struct {
 }
 
 // NewRedisBroker creates new RedisCeleryBroker with given redis connection pool
-func NewRedisBroker(conn *redis.Pool) *RedisCeleryBroker {
-	return &RedisCeleryBroker{
-		Pool:      conn,
-		QueueName: "celery",
-	}
-}
+func NewRedisBroker(conn *redis.Pool) *RedisCeleryBroker { _ = "STUB: not implemented"; return nil }
 
 // NewRedisCeleryBroker creates new RedisCeleryBroker based on given uri
 //
 // Deprecated: NewRedisCeleryBroker exists for historical compatibility
 // and should not be used. Use NewRedisBroker instead to create new RedisCeleryBroker.
-func NewRedisCeleryBroker(uri string) *RedisCeleryBroker {
-	return &RedisCeleryBroker{
-		Pool:      NewRedisPool(uri),
-		QueueName: "celery",
-	}
-}
+func NewRedisCeleryBroker(uri string) *RedisCeleryBroker { _ = "STUB: not implemented"; return nil }
 
 // SendCeleryMessage sends CeleryMessage to redis queue
 func (cb *RedisCeleryBroker) SendCeleryMessage(message *CeleryMessage) error {
-	jsonBytes, err := json.Marshal(message)
-	if err != nil {
-		return err
-	}
-	conn := cb.Get()
-	defer conn.Close()
-	_, err = conn.Do("LPUSH", cb.QueueName, jsonBytes)
-	if err != nil {
-		return err
-	}
+	_ = "STUB: not implemented"
 	return nil
 }
 
 // GetCeleryMessage retrieves celery message from redis queue
 func (cb *RedisCeleryBroker) GetCeleryMessage() (*CeleryMessage, error) {
-	conn := cb.Get()
-	defer conn.Close()
-	messageJSON, err := conn.Do("BRPOP", cb.QueueName, "1")
-	if err != nil {
-		return nil, err
-	}
-	if messageJSON == nil {
-		return nil, fmt.Errorf("null message received from redis")
-	}
-	messageList := messageJSON.([]interface{})
-	if string(messageList[0].([]byte)) != cb.QueueName {
-		return nil, fmt.Errorf("not a celery message: %v", messageList[0])
-	}
-	var message CeleryMessage
-	if err := json.Unmarshal(messageList[1].([]byte), &message); err != nil {
-		return nil, err
-	}
-	return &message, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // GetTaskMessage retrieves task message from redis queue
 func (cb *RedisCeleryBroker) GetTaskMessage() (*TaskMessage, error) {
-	celeryMessage, err := cb.GetCeleryMessage()
-	if err != nil {
-		return nil, err
-	}
-	return celeryMessage.GetTaskMessage(), nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // NewRedisPool creates pool of redis connections from given connection string
 //
 // Deprecated: newRedisPool exists for historical compatibility
 // and should not be used. Pool should be initialized outside of gocelery package.
-func NewRedisPool(uri string) *redis.Pool {
-	return &redis.Pool{
-		MaxIdle:     3,
-		IdleTimeout: 240 * time.Second,
-		Dial: func() (redis.Conn, error) {
-			c, err := redis.DialURL(uri)
-			if err != nil {
-				return nil, err
-			}
-			return c, err
-		},
-		TestOnBorrow: func(c redis.Conn, t time.Time) error {
-			_, err := c.Do("PING")
-			return err
-		},
-	}
-}
+func NewRedisPool(uri string) *redis.Pool { _ = "STUB: not implemented"; return nil }

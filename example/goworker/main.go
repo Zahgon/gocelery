@@ -5,7 +5,6 @@
 package main
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/gocelery/gocelery"
@@ -20,31 +19,11 @@ type exampleAddTask struct {
 }
 
 func (a *exampleAddTask) ParseKwargs(kwargs map[string]interface{}) error {
-	kwargA, ok := kwargs["a"]
-	if !ok {
-		return fmt.Errorf("undefined kwarg a")
-	}
-	kwargAFloat, ok := kwargA.(float64)
-	if !ok {
-		return fmt.Errorf("malformed kwarg a")
-	}
-	a.a = int(kwargAFloat)
-	kwargB, ok := kwargs["b"]
-	if !ok {
-		return fmt.Errorf("undefined kwarg b")
-	}
-	kwargBFloat, ok := kwargB.(float64)
-	if !ok {
-		return fmt.Errorf("malformed kwarg b")
-	}
-	a.b = int(kwargBFloat)
+	_ = "STUB: not implemented"
 	return nil
 }
 
-func (a *exampleAddTask) RunTask() (interface{}, error) {
-	result := a.a + a.b
-	return result, nil
-}
+func (a *exampleAddTask) RunTask() (interface{}, error) { _ = "STUB: not implemented"; return nil, nil }
 
 func main() {
 
